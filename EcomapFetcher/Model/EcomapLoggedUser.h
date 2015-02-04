@@ -13,7 +13,7 @@
 @property (nonatomic, strong, readonly) NSString *name;
 @property (nonatomic, strong, readonly) NSString *surname;
 @property (nonatomic, strong, readonly) NSString *role;
-@property (nonatomic, readonly) NSUInteger iat;
+@property (nonatomic, readonly) NSUInteger iat; //timeInterval since 1970
 @property (nonatomic, strong, readonly) NSString *token;
 @property (nonatomic, strong, readonly) NSString *email;
 

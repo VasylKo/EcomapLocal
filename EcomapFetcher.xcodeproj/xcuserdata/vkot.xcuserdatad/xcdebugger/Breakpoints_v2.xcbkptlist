@@ -6,16 +6,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EcomapFetcher/TestViewController.m"
+            timestampString = "444732391.634665"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "-login"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EcomapFetcher/Model/EcomapFetcher.m"
-            timestampString = "444658591.615582"
+            timestampString = "444737192.217436"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
-            landmarkName = "+loadProblemDetailsWithID:OnCompletion:"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "+loadAllProblemsOnCompletion:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

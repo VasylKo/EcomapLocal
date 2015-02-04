@@ -20,17 +20,6 @@
 
 @implementation EcomapProblemDetails
 
-#pragma mark - Designated initializer
-//-(instancetype)initWithProblem:(NSDictionary *)problem
-//{
-//    self = [super initWithProblem:problem];
-//    return self;
-//}
-//- (instancetype)init
-//{
-//    return nil;
-//}
-
 #pragma mark - Parsing problem
 -(void)parseProblem:(NSDictionary *)problem
 {

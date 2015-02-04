@@ -23,7 +23,6 @@
 #pragma mark - POST API
 //Login
 + (void)loginWithEmail:(NSString *)email andPassword:(NSString *)password OnCompletion:(void (^)(EcomapLoggedUser *loggedUser, NSError *error))completionHandler;
-//+ (void)loginWithEmail:(NSString *)email andPassword:(NSString *)password OnCompletion:(void (^)(NSDictionary *userInfo, NSError *error))completionHandler;
 
 
 

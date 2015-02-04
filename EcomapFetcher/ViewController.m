@@ -29,10 +29,10 @@
 //    
 //    [dataTask resume];
     
-//    NSURLSessionConfiguration *conifiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    NSURLSession *session = [NSURLSession sessionWithConfiguration:conifiguration delegate:self delegateQueue:nil];
-//    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:@"http://cdn.tutsplus.com/mobile/uploads/2013/12/sample.jpg"]];
-//    [downloadTask resume];
+    NSURLSessionConfiguration *conifiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:conifiguration delegate:self delegateQueue:nil];
+    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:[NSURL URLWithString:@"http://cdn.tutsplus.com/mobile/uploads/2013/12/sample.jpg"]];
+    [downloadTask resume];
     [self sendHTTPPost];
     
 }
@@ -42,19 +42,27 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - URLSession:downloadTask:didFinishDownloadingToURL:
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location
 {
     NSData *data = [NSData dataWithContentsOfURL:location];
     
+    //Perform in main thread
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.progressView setHidden:YES];
         [self.imageView setImage:[UIImage imageWithData:data]];
     });
 }
+
+#pragma mark - URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:
+
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes
 {
     
 }
+
+#pragma mark - URLSession:downloadTask:downloadTask didWriteData:totalBytesWritten:totalBytesExpectedToWrite:
+
 -(void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
 {
     float progress = (double)totalBytesWritten / (double)totalBytesExpectedToWrite;

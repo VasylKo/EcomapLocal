@@ -25,14 +25,29 @@
                 NSMutableArray *problems = nil;
                 NSArray *problemsFromJSON = nil;
                 if (!error) {
-                    //Parse JSON
-                    problemsFromJSON = (NSArray *)[NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
-                    problems = [NSMutableArray array];
-                    //Fill array with EcomapProblem
-                    for (NSDictionary *problem in problemsFromJSON) {
-                        EcomapProblem *ecoProblem = [[EcomapProblem alloc] initWithProblem:problem];
-                        [problems addObject:ecoProblem];
+                    //Extract received data
+                    if (JSON != nil) {
+                        //Parse JSON
+                        id parsedJSON = [NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
+                        if ([parsedJSON isKindOfClass:[NSArray class]]) {
+                            problemsFromJSON = (NSArray *)parsedJSON;
+                        }
+                        
+                        //Fill problems array
+                        if (problemsFromJSON) {
+                            problems = [NSMutableArray array];
+                            //Fill array with EcomapProblem
+                            for (NSDictionary *problem in problemsFromJSON) {
+                                EcomapProblem *ecoProblem = [[EcomapProblem alloc] initWithProblem:problem];
+                                [problems addObject:ecoProblem];
+                            }
+                        }
+                    
+                    } else {
+                        //No data was received. Form error message
+                        error = [EcomapFetcher errorForStatusCode:500];
                     }
+                    
                 }
                 //set up completionHandler
                 completionHandler(problems, error);
@@ -49,20 +64,32 @@
                 NSDictionary *problem = nil;
                 EcomapProblemDetails *problemDetails = nil;
                 if (!error) {
-                    //Check if we have a problem with such problemID
-                    //Parse JSON
-                    id answer = [NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
-                    if ([answer isKindOfClass:[NSDictionary class]]) {
-                        //Return error
-                        NSError *err = [[NSError alloc] initWithDomain:NSMachErrorDomain code:404 userInfo:answer];
-                        completionHandler(problemDetails, err);
-                        return;
+                    //Extract received data
+                    if (JSON != nil) {
+                        //Check if we have a problem with such problemID
+                        //Parse JSON
+                        id answer = [NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
+                        if ([answer isKindOfClass:[NSDictionary class]]) {
+                            //Return error
+                            NSError *err = [[NSError alloc] initWithDomain:NSMachErrorDomain code:404 userInfo:answer];
+                            completionHandler(problemDetails, err);
+                            return;
+                        }
+                        
+                        //Extract problemDetails from JSON
+                        //Parse JSON
+                        //Parse JSON
+                        id parsedJSON = [NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
+                        if ([parsedJSON isKindOfClass:[NSArray class]]) {
+                            problem = (NSDictionary *)[[parsedJSON objectAtIndex:ECOMAP_PROBLEM_DETAILS_DESCRIPTION] firstObject];
+                        }
+                        problemDetails = [[EcomapProblemDetails alloc] initWithProblem:problem];
+                    } else {
+                        //No data was received. Form error message
+                        error = [EcomapFetcher errorForStatusCode:500];
                     }
-                    
-                    //Extract problemDetails from JSON
-                    problem = (NSDictionary *)[[[NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error] objectAtIndex:ECOMAP_PROBLEM_DETAILS_DESCRIPTION] firstObject];
-                    problemDetails = [[EcomapProblemDetails alloc] initWithProblem:problem];
                 }
+                
                 //Return problemDetails
                 completionHandler(problemDetails, error);
             }];
@@ -92,43 +119,13 @@
                       if (!error) {
                           //Parse JSON
                           userInfo = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
-                          }
-                      loggedUser = [[EcomapLoggedUser alloc] initWithUserInfo:userInfo];
+                          loggedUser = [[EcomapLoggedUser alloc] initWithUserInfo:userInfo];
+                      }
+                      
                       //set up completionHandler
                       completionHandler(loggedUser, error);
                   }];
 }
-
-/*
- #pragma mark - Login
- + (void)loginWithEmail:(NSString *)email andPassword:(NSString *)password OnCompletion:(void (^)(NSDictionary *userInfo, NSError *error))completionHandler
- {
- //Set up session configuration
- NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
- [sessionConfiguration setHTTPAdditionalHeaders:@{@"Content-Type" : @"application/json;charset=UTF-8"}];
- 
- //Set up request
- NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:[EcomapURLFetcher URLforLogin]];
- [request setHTTPMethod:@"POST"];
- 
- //Create JSON data to send to  server
- NSDictionary *loginData = @{@"email" : email, @"password" : password};
- NSData *data = [NSJSONSerialization dataWithJSONObject:loginData options:0
- error:nil];
- [self uploadDataTaskWithRequest:request
- fromData:data
- sessionConfiguration:sessionConfiguration
- completionHandler:^(NSData *JSON, NSError *error) {
- NSDictionary *userInfo = nil;
- if (!error) {
- //Parse JSON
- userInfo = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:JSON options:0 error:&error];
- }
- //set up completionHandler
- completionHandler(userInfo, error);
- }];
- }
-*/
 
 #pragma mark - Load data task
 +(void)loadDataTaskWithRequest:(NSURLRequest *)request sessionConfiguration:(NSURLSessionConfiguration *)configuration completionHandler:(void (^)(NSData *JSON, NSError *error))completionHandler
@@ -140,7 +137,13 @@
                                         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                             NSData *JSON = nil;
                                             if (!error) {
-                                                JSON = data;
+                                                //Set data
+                                                if ([EcomapFetcher statusCodeFromResponse:response] == 200) {
+                                                    JSON = data;
+                                                } else {
+                                                    //Create error message
+                                                    error = [EcomapFetcher errorForStatusCode:[EcomapFetcher statusCodeFromResponse:response]];
+                                                }
                                             }
                                             //Perform completionHandler task on main thread
                                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -156,20 +159,17 @@
 {
     //Create new session to download JSON file
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    //Perform download task on different thread
+    //Perform upload task on different thread
     NSURLSessionUploadTask *task = [session uploadTaskWithRequest:request fromData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         NSData *JSON = nil;
         if (!error) {
-            //Cast an instance of NSHTTURLResponse from the response and use its statusCode method
-            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-            //NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
-            if (httpResponse.statusCode == 200) {
+            //Set data
+            if ([EcomapFetcher statusCodeFromResponse:response] == 200) {
                 JSON = data;
             } else {
-                NSError *unauthorizedError = [[NSError alloc] initWithDomain:@"Unauthorized user" code:400 userInfo:@{@"error" : @"Incorect email or password"}];
-                error = unauthorizedError;
+                //Create error message
+                error = [EcomapFetcher errorForStatusCode:[EcomapFetcher statusCodeFromResponse:response]];
             }
-            
         }
         //Perform completionHandler task on main thread
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -179,8 +179,40 @@
     [task resume];
 }
 
+#pragma mark - Get status code
++(NSInteger)statusCodeFromResponse:(NSURLResponse *)response
+{
+    //Cast an instance of NSHTTURLResponse from the response and use its statusCode method
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    //NSLog(@"response status code: %ld", (long)[httpResponse statusCode]);
+    return httpResponse.statusCode;
+}
 
-
+#pragma mark - Form error for status code
+//Form error for different status code. (Fill more case: if needed)
++(NSError *)errorForStatusCode:(NSInteger)statusCode
+{
+    
+    NSError *error = nil;
+    switch (statusCode) {
+        case 400:
+            error = [[NSError alloc] initWithDomain:@"Bad Request" code:statusCode userInfo:@{@"error" : @"Incorect email or password"}];
+            break;
+        
+        case 404:
+            error = [[NSError alloc] initWithDomain:@"Not Found" code:statusCode userInfo:@{@"error" : @"The server has not found anything matching the Request URL"}];
+            break;
+            
+        case 500:
+            error = [[NSError alloc] initWithDomain:@"No data received" code:statusCode userInfo:@{@"error" : @"No data received from server"}];
+            break;
+        
+        default:
+            error = [[NSError alloc] initWithDomain:@"Unknown error" code:statusCode userInfo:@{@"error" : @"Unknown error"}];
+            break;
+    }
+    return error;
+}
 /*
  //Create new session to download JSON file
  NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]];
