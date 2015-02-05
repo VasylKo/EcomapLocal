@@ -43,83 +43,15 @@
 -(void)parseProblem:(NSDictionary *)problem
 {
     if (problem) {
-        self.problemID = [self IDOfProblem:problem];
-        self.title = [self titleOfProblem:problem];
-        self.latitude = [self latitudeOfProblem:problem];
-        self.longtitude = [self longtitudeOfProblem:problem];
-        self.problemTypesID = [self typeIDOfProblem:problem];
-        self.problemTypeTitle = [self typeTitleOfProblem:problem];
-        self.isSolved = [self isSolvedProblem:problem];
+        self.problemID = [[problem valueForKey:ECOMAP_PROBLEM_ID] integerValue];
+        self.title = [problem valueForKey:ECOMAP_PROBLEM_TITLE];
+        self.latitude = [[problem valueForKey:ECOMAP_PROBLEM_LATITUDE] doubleValue];
+        self.longtitude = [[problem valueForKey:ECOMAP_PROBLEM_LONGITUDE] doubleValue];
+        self.problemTypesID = [[problem valueForKey:ECOMAP_PROBLEM_TYPE_ID] integerValue];
+        self.problemTypeTitle = [ECOMAP_PROBLEM_TYPES_ARRAY objectAtIndex:(self.problemTypesID - 1)];
+        self.isSolved = [[problem valueForKey:ECOMAP_PROBLEM_STATUS] integerValue] == 0 ? NO : YES;
         self.dateCreated = [self dateCreatedOfProblem:problem];
     }
-}
-
-
-//Returns problem ID
-- (NSUInteger)IDOfProblem:(NSDictionary *)problem
-{
-    NSUInteger problemID = [[problem valueForKey:ECOMAP_PROBLEM_ID] integerValue];
-    if (problemID != 0) {
-        return problemID;
-    }
-    return NSNotFound;
-}
-
-//Returns problem title
-- (NSString *)titleOfProblem:(NSDictionary *)problem{
-    NSString *title = (NSString *)[problem valueForKey:ECOMAP_PROBLEM_TITLE];
-    if (title) {
-        return title;
-    }
-    return nil;
-}
-
-//Returns problem latitude
-- (double)latitudeOfProblem:(NSDictionary *)problem
-{
-    double latitude = [[problem valueForKey:ECOMAP_PROBLEM_LATITUDE] doubleValue];
-    if (latitude != 0) {
-        return latitude;
-    }
-    return NSNotFound;
-}
-
-//Returns problem longtitude
-- (double)longtitudeOfProblem:(NSDictionary *)problem
-{
-    double longtitude = [[problem valueForKey:ECOMAP_PROBLEM_LONGITUDE] doubleValue];
-    if (longtitude != 0) {
-        return longtitude;
-    }
-    return NSNotFound;
-}
-
-//Returns problem type ID
-- (NSUInteger)typeIDOfProblem:(NSDictionary *)problem
-{
-    NSUInteger problemTypeID = [[problem valueForKey:ECOMAP_PROBLEM_TYPE_ID] integerValue];
-    if (problemTypeID != 0) {
-        return problemTypeID;
-    }
-    return NSNotFound;
-}
-
-//Returns problem type title
-- (NSString *)typeTitleOfProblem:(NSDictionary *)problem
-{
-    NSUInteger problemTypeID = [[problem valueForKey:ECOMAP_PROBLEM_TYPE_ID] integerValue];
-    if (problemTypeID != 0) {
-        return [ECOMAP_PROBLEM_TYPES_ARRAY objectAtIndex:(problemTypeID - 1)];
-    }
-    return nil;
-}
-
-//Returns problem's status
-- (BOOL)isSolvedProblem:(NSDictionary *)problem
-{
-    NSUInteger problemStatus = [[problem valueForKey:ECOMAP_PROBLEM_STATUS] integerValue];
-    return problemStatus == 0 ? NO : YES;
-    
 }
 
 //Returns problem's date added
