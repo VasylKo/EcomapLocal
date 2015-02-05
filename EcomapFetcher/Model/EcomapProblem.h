@@ -17,7 +17,7 @@
 @property (nonatomic, readonly) NSUInteger problemTypesID;
 @property (nonatomic, strong, readonly) NSString *problemTypeTitle;
 @property (nonatomic, readonly) BOOL isSolved;
-@property (nonatomic, strong, readonly) NSString *dateCreated;
+@property (nonatomic, strong, readonly) NSDate *dateCreated;
 
 //Designated initializer
 -(instancetype)initWithProblem:(NSDictionary *)problem;

@@ -24,6 +24,45 @@
     // Do any additional setup after loading the view.
     [self loadProblems];
     [self login];
+    //[self dateParsing];
+}
+
+-(void)dateParsing
+{
+    //Case 1
+     NSString *dateString = @"2014-02-18T07:15:51.000Z";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.'000Z'"];
+    NSDate *cDate = [dateFormatter dateFromString:dateString];
+    NSDateFormatter *dateFormatter1 = [[NSDateFormatter alloc] init];
+    dateFormatter1.timeStyle = NSDateFormatterShortStyle;
+    dateFormatter1.dateStyle = NSDateFormatterMediumStyle;
+    NSLog(@"Date is %@", [dateFormatter1 stringFromDate:cDate]);
+    
+    /*
+    NSString *dateString = @"2010-11-28T20:30:49Z";
+    if ([dateString hasSuffix:@"Z"]) {
+        dateString = [[dateString substringToIndex:(dateString.length-1)] stringByAppendingString:@"-0000"];
+    }
+    return [dateFromString:dateString
+                     withFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
+    
+
+   
+    //NSDate *date = [NSDateFormatter alloc] ini
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSDate *date = [dateFormatter dateFromString:dateString];
+    dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+    
+    //NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:118800];
+    
+    NSLocale *usLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    [dateFormatter setLocale:usLocale];
+    
+    NSLog(@"Date for locale %@: %@",
+          [[dateFormatter locale] localeIdentifier], [dateFormatter stringFromDate:date]);
+     */
 }
 
 -(void)login

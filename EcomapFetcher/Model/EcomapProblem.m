@@ -17,7 +17,7 @@
 @property (nonatomic, readwrite) NSUInteger problemTypesID;
 @property (nonatomic, strong, readwrite) NSString *problemTypeTitle;
 @property (nonatomic, readwrite) BOOL isSolved;
-@property (nonatomic, strong, readwrite) NSString *dateCreated;
+@property (nonatomic, strong, readwrite) NSDate *dateCreated;
 @end
 
 @implementation EcomapProblem
@@ -55,12 +55,16 @@
 }
 
 //Returns problem's date added
-- (NSString *)dateCreatedOfProblem:(NSDictionary *)problem
+- (NSDate *)dateCreatedOfProblem:(NSDictionary *)problem
 {
-    NSString *date = (NSString *)[problem valueForKey:ECOMAP_PROBLEM_DATE];
-    if (date) {
-        return date;
+    NSDate *date = nil;
+    NSString *dateString = [problem valueForKey:ECOMAP_PROBLEM_DATE];
+    if (dateString) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.'000Z'"];
+        date = [dateFormatter dateFromString:dateString];
     }
+    
     return nil;
 }
 
