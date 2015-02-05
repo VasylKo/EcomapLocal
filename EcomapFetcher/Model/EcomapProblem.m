@@ -63,6 +63,7 @@
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.'000Z'"];
         date = [dateFormatter dateFromString:dateString];
+        if (date) return date;
     }
     
     return nil;

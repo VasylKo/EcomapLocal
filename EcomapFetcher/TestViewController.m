@@ -108,6 +108,7 @@
                                        NSLog(@"Error loading problem details: %@", error);
                                    }
                                }];
+     
 }
 
 - (void)didReceiveMemoryWarning {
