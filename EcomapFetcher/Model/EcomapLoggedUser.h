@@ -21,10 +21,6 @@
 //Return nil if no user is currently logged in
 +(EcomapLoggedUser *)currentLoggedUser;
 
-//This method don't perform logout from ecomap server. It just clear current logged user instanse pointer.
-//To log out from server use appropriative class method from EcomapFetcher. Then this method will be called automatically
-+(void)logout;
-
 //Designated initializer
 -(instancetype)initWithUserInfo:(NSDictionary *)userInfo;
 @end

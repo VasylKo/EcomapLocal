@@ -19,13 +19,21 @@
 @end
 
 @implementation EcomapProblemDetails
-
-#pragma mark - Parsing problem
+#pragma mark - Overriding problem init
 //Override
+-(instancetype)initWithProblem:(NSDictionary *)problem
+{
+    self = [super initWithProblem:problem];
+    if (self) {
+        if (!problem) return nil;
+        [self parseProblem:problem];
+    }
+    return self;
+}
+
 -(void)parseProblem:(NSDictionary *)problem
 {
     if (problem) {
-        [super parseProblem:problem];
         self.content = [problem valueForKey:ECOMAP_PROBLEM_CONTENT];
         self.proposal = [problem valueForKey:ECOMAP_PROBLEM_PROPOSAL];
         self.severity = [[problem valueForKey:ECOMAP_PROBLEM_SEVERITY] integerValue];

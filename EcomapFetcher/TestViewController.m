@@ -23,7 +23,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self loadProblems];
-    [self login];
+    //[self login];
     //[self dateParsing];
 }
 
@@ -64,6 +64,41 @@
           [[dateFormatter locale] localeIdentifier], [dateFormatter stringFromDate:date]);
      */
 }
+- (IBAction)login:(id)sender {
+    [EcomapFetcher loginWithEmail:@"admin@.com"
+                      andPassword:@"admin"
+                     OnCompletion:^(EcomapLoggedUser *user, NSError *error) {
+                         if (!error) {
+                             
+                             NSLog(@"Login success! %@", user);
+                             NSLog(@"User role: %@", user.role);
+                             
+                             //Read current logged user
+                             EcomapLoggedUser *loggedUser = [EcomapLoggedUser currentLoggedUser];
+                             NSLog(@"Token: %@", loggedUser.token);
+                             //Logout
+//                             [EcomapLoggedUser logout];
+//                             
+//                             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//                             [defaults removeObjectForKey:@"currentLoggedUser"];
+//                             
+//                             EcomapLoggedUser *loggedUser2 = [EcomapLoggedUser currentLoggedUser];
+//                             NSLog(@"Token: %@", loggedUser2.token);
+                         } else {
+                             NSLog(@"Error loading problems: %@", error);
+                         }
+                     }];
+}
+- (IBAction)currentUser:(id)sender {
+    EcomapLoggedUser *loggedUser = [EcomapLoggedUser currentLoggedUser];
+    NSLog(@"Email: %@", loggedUser.email);
+}
+- (IBAction)logout:(id)sender {
+     //Logout
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    //[defaults setObject:@"NO" forKey:@"isUserLogged"];
+    [defaults removeObjectForKey:@"isUserLogged"];
+}
 
 -(void)login
 {
@@ -77,7 +112,11 @@
                              EcomapLoggedUser *loggedUser = [EcomapLoggedUser currentLoggedUser];
                              NSLog(@"Token: %@", loggedUser.token);
                              //Logout
-                             [EcomapLoggedUser logout];
+                             //[EcomapLoggedUser logout];
+                             
+                             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                             [defaults removeObjectForKey:@"currentLoggedUser"];
+                             
                              EcomapLoggedUser *loggedUser2 = [EcomapLoggedUser currentLoggedUser];
                              NSLog(@"Token: %@", loggedUser2.token);
                          } else {

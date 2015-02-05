@@ -22,7 +22,4 @@
 //Designated initializer
 -(instancetype)initWithProblem:(NSDictionary *)problem;
 
-//Protected
-//For subclasses
--(void)parseProblem:(NSDictionary *)problem;
 @end

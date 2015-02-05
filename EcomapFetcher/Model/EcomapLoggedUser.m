@@ -9,7 +9,7 @@
 #import "EcomapLoggedUser.h"
 #import "EcomapPathDefine.h"
 
-EcomapLoggedUser *currentLoggedUser = nil;
+static EcomapLoggedUser *currentLoggedUser = nil;
 
 @interface EcomapLoggedUser ()
 @property (nonatomic, readwrite) NSUInteger userID;
@@ -23,27 +23,26 @@ EcomapLoggedUser *currentLoggedUser = nil;
 @end
 
 @implementation EcomapLoggedUser
+
 #pragma mark - Return current clas instanse
 +(EcomapLoggedUser *)currentLoggedUser
 {
-    return currentLoggedUser;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [[defaults objectForKey:@"isUserLogged"] isEqualToString:@"YES"] ? currentLoggedUser : nil;
 }
 
-#pragma mark - Logout
-+(void)logout
-{
-    currentLoggedUser = nil;
-}
-
-#pragma mark - Private initializer
+#pragma mark - User initializer
 -(instancetype)initWithUserInfo:(NSDictionary *)userInfo
 {
     self = [super init];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (self) {
         if (userInfo){
             [self parseUser:userInfo];
+            [defaults setObject:@"YES" forKey:@"isUserLogged"];
             currentLoggedUser = self;
         } else {
+            [defaults setObject:@"NO" forKey:@"isUserLogged"];
             currentLoggedUser = nil;
             return nil;
         }
@@ -59,7 +58,6 @@ EcomapLoggedUser *currentLoggedUser = nil;
     return nil;
 }
 
-#pragma mark - Parse userInfo
 -(void)parseUser:(NSDictionary *)userInfo
 {
     if (userInfo) {
@@ -73,7 +71,7 @@ EcomapLoggedUser *currentLoggedUser = nil;
     }
 }
 
-#pragma mark - Override description
+#pragma mark - Override NSObject methods
 //Override
 -(NSString *)description
 {

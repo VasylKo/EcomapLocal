@@ -28,21 +28,6 @@
     self = [super init];
     if (self) {
         if (!problem) return nil;
-        [self parseProblem:problem];
-    }
-    return self;
-}
-
-- (instancetype)init
-{
-    @throw [NSException exceptionWithName:@"Error" reason:@"Use designated initializer -initWithProblem:" userInfo:nil];
-    return nil;
-}
-
-#pragma mark - Parsing problem
--(void)parseProblem:(NSDictionary *)problem
-{
-    if (problem) {
         self.problemID = [[problem valueForKey:ECOMAP_PROBLEM_ID] integerValue];
         self.title = [problem valueForKey:ECOMAP_PROBLEM_TITLE];
         self.latitude = [[problem valueForKey:ECOMAP_PROBLEM_LATITUDE] doubleValue];
@@ -52,6 +37,13 @@
         self.isSolved = [[problem valueForKey:ECOMAP_PROBLEM_STATUS] integerValue] == 0 ? NO : YES;
         self.dateCreated = [self dateCreatedOfProblem:problem];
     }
+    return self;
+}
+
+- (instancetype)init
+{
+    @throw [NSException exceptionWithName:@"Error" reason:@"Use designated initializer -initWithProblem:" userInfo:nil];
+    return nil;
 }
 
 //Returns problem's date added

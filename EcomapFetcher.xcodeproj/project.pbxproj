@@ -149,11 +149,17 @@
 		5152CF0D1A7E3ADB00D3AC28 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5152CF181A7E409F00D3AC28 /* EcomapPathDefine.h */,
-				E5F27C871A80BD0800121A7E /* EcomapURLFetcher.h */,
-				E5F27C881A80BD0800121A7E /* EcomapURLFetcher.m */,
+				51B485221A840DE900BA8AFF /* Fetcher Helper Classes */,
+				51B485211A840D8C00BA8AFF /* Value-Object Classes */,
 				E5F27C841A80BC7100121A7E /* EcomapFetcher.h */,
 				E5F27C851A80BC7100121A7E /* EcomapFetcher.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		51B485211A840D8C00BA8AFF /* Value-Object Classes */ = {
+			isa = PBXGroup;
+			children = (
 				E5F27C811A80B20400121A7E /* EcomapProblem.h */,
 				E5F27C821A80B20400121A7E /* EcomapProblem.m */,
 				E5F27C8D1A80C94E00121A7E /* EcomapProblemDetails.h */,
@@ -161,7 +167,17 @@
 				5152CF221A815F9700D3AC28 /* EcomapLoggedUser.h */,
 				5152CF231A815F9700D3AC28 /* EcomapLoggedUser.m */,
 			);
-			name = Model;
+			name = "Value-Object Classes";
+			sourceTree = "<group>";
+		};
+		51B485221A840DE900BA8AFF /* Fetcher Helper Classes */ = {
+			isa = PBXGroup;
+			children = (
+				5152CF181A7E409F00D3AC28 /* EcomapPathDefine.h */,
+				E5F27C871A80BD0800121A7E /* EcomapURLFetcher.h */,
+				E5F27C881A80BD0800121A7E /* EcomapURLFetcher.m */,
+			);
+			name = "Fetcher Helper Classes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
