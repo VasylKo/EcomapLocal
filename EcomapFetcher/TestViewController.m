@@ -66,8 +66,8 @@
      */
 }
 - (IBAction)login:(id)sender {
-    [EcomapFetcher loginWithEmail:@"admin@.com"
-                      andPassword:@"admin"
+    [EcomapFetcher loginWithEmail:@"clic@ukr.net"
+                      andPassword:@"eco"
                      OnCompletion:^(EcomapLoggedUser *user, NSError *error) {
                          if (!error) {
                              
@@ -97,8 +97,8 @@
 - (IBAction)logout:(id)sender {
      //Logout
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //[defaults setObject:@"NO" forKey:@"isUserLogged"];
-    [defaults removeObjectForKey:@"isUserLogged"];
+    [defaults setObject:@"NO" forKey:@"isUserLogged"];
+    //[defaults removeObjectForKey:@"isUserLogged"];
 }
 
 -(void)login
