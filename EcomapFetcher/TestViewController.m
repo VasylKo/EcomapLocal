@@ -99,7 +99,9 @@
     //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     //[defaults setObject:@"NO" forKey:@"isUserLogged"];
     //[defaults removeObjectForKey:@"isUserLogged"];
-    [EcomapFetcher logoutUser:[EcomapLoggedUser currentLoggedUser] OnCompletion:nil];
+    [EcomapFetcher logoutUser:[EcomapLoggedUser currentLoggedUser] OnCompletion:^(BOOL result, NSError *error) {
+        
+    }];
 }
 
 -(void)login

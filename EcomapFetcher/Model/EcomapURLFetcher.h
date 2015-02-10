@@ -10,6 +10,12 @@
 
 @interface EcomapURLFetcher : NSObject
 
+//Return server domain
++ (NSString *)serverDomain;
+
+//Return URL to servet
++ (NSURL *)URLforServer;
+
 //Return API URL to get all problems
 + (NSURL *)URLforAllProblems;
 
@@ -18,5 +24,8 @@
 
 //Return API URL to logIn
 + (NSURL *)URLforLogin;
+
+//Return API URL to logout
++ (NSURL *)URLforLogout;
 
 @end

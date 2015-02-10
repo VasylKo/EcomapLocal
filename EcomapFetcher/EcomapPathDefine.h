@@ -28,6 +28,7 @@
 #define ECOMAP_API @"api/"
 #define ECOMAP_GET_PROBLEMS_API @"problems/"
 #define ECOMAP_POST_LOGIN_API @"login/"
+#define ECOMAP_GET_LOGOUT_API @"logout/"
 #define ECOMAP_GET_PHOTOS_ADDRESS @"photos/large/"
 
 //Problems types descripton
@@ -65,7 +66,7 @@
 #define ECOMAP_PHOTO_USERS_ID @"Users_Id"
 
 // keys (paths) to values in a USER dictionary
-#define ECOMAP_USER_ID @"Id"
+#define ECOMAP_USER_ID @"id"
 #define ECOMAP_USER_NAME @"name"
 #define ECOMAP_USER_SURNAME @"surname"
 #define ECOMAP_USER_ROLE @"role"

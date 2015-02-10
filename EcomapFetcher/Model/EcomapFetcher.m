@@ -19,7 +19,7 @@
 #pragma mark - Load all Problems
 +(void)loadAllProblemsOnCompletion:(void (^)(NSArray *problems, NSError *error))completionHandler
 {
-    [self loadDataTaskWithRequest:[NSURLRequest requestWithURL:[EcomapURLFetcher URLforAllProblems]]
+    [self dataTaskWithRequest:[NSURLRequest requestWithURL:[EcomapURLFetcher URLforAllProblems]]
              sessionConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
                 completionHandler:^(NSData *JSON, NSError *error) {
                     NSMutableArray *problems = nil;
@@ -51,7 +51,7 @@
 #pragma mark - Load Problem with ID
 + (void)loadProblemDetailsWithID:(NSUInteger)problemID OnCompletion:(void (^)(EcomapProblemDetails *problemDetails, NSError *error))completionHandler
 {
-    [self loadDataTaskWithRequest:[NSURLRequest requestWithURL:[EcomapURLFetcher URLforProblemWithID:problemID]]
+    [self dataTaskWithRequest:[NSURLRequest requestWithURL:[EcomapURLFetcher URLforProblemWithID:problemID]]
              sessionConfiguration:[NSURLSessionConfiguration ephemeralSessionConfiguration]
                 completionHandler:^(NSData *JSON, NSError *error) {
                     NSDictionary *problem = nil;
@@ -109,10 +109,23 @@
                       if (!error) {
                           //Parse JSON
                           userInfo = [EcomapFetcher parseJSONtoDictionary:JSON];
+                          //Create EcomapLoggedUser object
                           loggedUser = [[EcomapLoggedUser alloc] initWithUserInfo:userInfo];
-                          //Log success login
+                          
                           if (loggedUser) {
                               NSLog(@"LogIN to ecomap success! %@", loggedUser.description);
+                              
+                              //Create cookie
+                              NSHTTPCookie *cookie = [self createCookieForUser:[EcomapLoggedUser currentLoggedUser]];
+                              if (cookie) {
+                                  NSLog(@"Cookies created success!");
+                                  //Put cookie to NSHTTPCookieStorage
+                                  [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
+                                  //NSArray *cook = [NSArray arrayWithObjects:cookie, nil];
+                                  [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:@[cookie]
+                                                                                     forURL:[EcomapURLFetcher URLforServer]
+                                                                            mainDocumentURL:nil];
+                              }
                           }
                       }
                       
@@ -122,55 +135,41 @@
 }
 
 #pragma mark - Logout
-//Code in progress...
-+ (void)logoutUser:(EcomapLoggedUser *)loggedUser OnCompletion:(void (^)(BOOL *result, NSError *error))completionHandler
++ (void)logoutUser:(EcomapLoggedUser *)loggedUser OnCompletion:(void (^)(BOOL result, NSError *error))completionHandler
 {
-    //Cookies
-    NSString *cookieString = [NSString stringWithFormat:@"userName=admin; userSurname=null; userRole=administrator; token=%@; id=1; userEmail=admin%%40.com",[[EcomapLoggedUser currentLoggedUser] token]];
-    NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                @"http://ecomap.org/", NSHTTPCookieDomain,
-                                @"/", NSHTTPCookiePath,
-                                @"ECOMAPCOOKIE", NSHTTPCookieName,
-                                cookieString, NSHTTPCookieValue,
-                                nil];
-    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:properties];
-    NSArray* cookies = [NSArray arrayWithObjects: cookie, nil];
+    //Set up session configuration
+    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
     
-    //NSArray* cookieArray = [NSArray arrayWithObjects: cookie,cookie1, nil];
-    //[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:cookieArray forURL:[NSURL   URLWithString:urlString] mainDocumentURL:nil];
-    
-    NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
-    NSURLSessionConfiguration *dc = [NSURLSessionConfiguration defaultSessionConfiguration];
-    [dc setHTTPAdditionalHeaders:headers];
-    
-    
-    //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:@"http://ecomap.org/"]];
-    //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
-    //NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
-    //[configuration setHTTPAdditionalHeaders:headers];
-    
-    //Create new session to download JSON file
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:dc];
-    //Perform download task on different thread
-    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"http://ecomap.org/api/logout"]
-                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-                                            
-                                            }];
-    
-    [task resume];
-
-    
-    
-    
-    if (loggedUser) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:@"NO" forKey:@"isUserLogged"];
-    }
+    [self dataTaskWithRequest:[NSURLRequest requestWithURL:[EcomapURLFetcher URLforLogout]]
+         sessionConfiguration:sessionConfiguration
+            completionHandler:^(NSData *JSON, NSError *error) {
+               BOOL result;
+               if (!error) {
+                   //Read response Data (it is not JSON actualy, just plain text)
+                   NSString *statusResponse =[[NSString alloc]initWithData:JSON encoding:NSUTF8StringEncoding];
+                   result = [statusResponse isEqualToString:@"OK"] ? YES : NO;
+                   NSLog(@"Logout %@!", statusResponse);
+                   
+                   //Clear coockies
+                   NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[EcomapURLFetcher URLforServer]];
+                   for (NSHTTPCookie *cookie in cookies) {
+                       [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+                   }
+                   
+                   //Set userDefaults @"isUserLogged" key to NO to delete EcomapLoggedUser object
+                   if (loggedUser) {
+                       NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                       [defaults setObject:@"NO" forKey:@"isUserLogged"];
+                   }
+               }
+               completionHandler(result, error);
+}];
+  
 }
 
-#pragma mark - Load data task
-+(void)loadDataTaskWithRequest:(NSURLRequest *)request sessionConfiguration:(NSURLSessionConfiguration *)configuration completionHandler:(void (^)(NSData *JSON, NSError *error))completionHandler
+#pragma mark - Data tasks
+//Load data task
++(void)dataTaskWithRequest:(NSURLRequest *)request sessionConfiguration:(NSURLSessionConfiguration *)configuration completionHandler:(void (^)(NSData *JSON, NSError *error))completionHandler
 {
     //Create new session to download JSON file
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
@@ -199,7 +198,7 @@
     [task resume];
 }
 
-#pragma mark - upLoad data task
+//Upload data task
 +(void)uploadDataTaskWithRequest:(NSURLRequest *)request fromData:(NSData *)data sessionConfiguration:(NSURLSessionConfiguration *)configuration completionHandler:(void (^)(NSData *JSON, NSError *error))completionHandler
 {
     //Create new session to download JSON file
@@ -213,18 +212,6 @@
                 //Log to console
                 NSLog(@"Data uploaded success to url: %@", request.URL);
                 JSON = data;
-                
-                //Cookies
-                //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:@"http://ecomap.org/"]];
-                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-                
-                NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:[httpResp allHeaderFields] forURL:[response URL]];
-                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:cookies forURL:[response URL] mainDocumentURL:nil];
-                
-                NSArray * cookiesBack = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
-                NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesBack];
-                //[configuration setHTTPAdditionalHeaders:headers];
-                
             } else {
                 //Create error message
                 error = [EcomapFetcher errorForStatusCode:[EcomapFetcher statusCodeFromResponse:response]];
@@ -238,7 +225,8 @@
     [task resume];
 }
 
-#pragma mark - Parse JSON data to Array
+#pragma mark - Parse JSON
+//Parse JSON data to Array
 + (NSArray *)parseJSONtoArray:(NSData *)JSON
 {
     NSArray *dataFromJSON = nil;
@@ -255,7 +243,7 @@
     return dataFromJSON;
 }
 
-#pragma mark - Parse JSON data to Dictionary
+//Parse JSON data to Dictionary
 + (NSDictionary *)parseJSONtoDictionary:(NSData *)JSON
 {
     NSDictionary *dataFromJSON = nil;
@@ -272,7 +260,7 @@
     return dataFromJSON;
 }
 
-#pragma mark - Get status code
+#pragma mark - Helper methods
 +(NSInteger)statusCodeFromResponse:(NSURLResponse *)response
 {
     //Cast an instance of NSHTTURLResponse from the response and use its statusCode method
@@ -280,7 +268,6 @@
     return httpResponse.statusCode;
 }
 
-#pragma mark - Form error for status code
 //Form error for different status code. (Fill more case: if needed)
 +(NSError *)errorForStatusCode:(NSInteger)statusCode
 {
@@ -289,6 +276,10 @@
     switch (statusCode) {
         case 400:
             error = [[NSError alloc] initWithDomain:@"Bad Request" code:statusCode userInfo:@{@"error" : @"Incorect email or password"}];
+            break;
+        
+        case 401:
+            error = [[NSError alloc] initWithDomain:@"Unauthorized" code:statusCode userInfo:@{@"error" : @"Authentication credentials were missing or incorrect"}];
             break;
             
         case 404:
@@ -302,6 +293,51 @@
     return error;
 }
 
++ (NSHTTPCookie *)createCookieForUser:(EcomapLoggedUser *)userData
+{
+    NSHTTPCookie *cookie = nil;
+    if (userData) {
+        //Form userName value
+        NSString *userName = userData.name ? userData.name : @"null";
+        NSString *userNameValue = [NSString stringWithFormat:@"userName=%@", userName];
+        
+        //Form userSurname value
+        NSString *userSurname = userData.surname ? userData.surname : @"null";
+        NSString *userSurnameValue = [NSString stringWithFormat:@"userSurname=%@", userSurname];
+        
+        //Form userRole value
+        NSString *userRole = userData.role ? userData.role : @"null";
+        NSString *userRoleValue = [NSString stringWithFormat:@"userRole=%@", userRole];
+        
+        //Form token value
+        NSString *token = userData.token ? userData.token : @"null";
+        NSString *tokenValue = [NSString stringWithFormat:@"token=%@", token];
+        
+        //Form id value
+        NSString *idValue = [NSString stringWithFormat:@"id=%d", userData.userID];
+        
+        //Form userEmail value
+        NSString *userEmail = userData.email ? [userData.email stringByReplacingOccurrencesOfString:@"@" withString:@"%"] : @"null";
+        NSString *userEmailValue = [NSString stringWithFormat:@"userEmail=%@", userEmail];
+        
+        //Form cookie value
+        NSString *cookieValue = [NSString stringWithFormat:@"%@; %@; %@; %@; %@; %@", userNameValue, userSurnameValue, userRoleValue, tokenValue, idValue, userEmailValue];
+        
+        //Form cookie properties
+        NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [EcomapURLFetcher serverDomain], NSHTTPCookieDomain,
+                                    @"/", NSHTTPCookiePath,
+                                    @"ECOMAPCOOKIE", NSHTTPCookieName,
+                                    cookieValue, NSHTTPCookieValue,
+                                    [[NSDate date] dateByAddingTimeInterval:864000], NSHTTPCookieExpires, //10 days
+                                    nil];
+        
+        //Form cookie
+        cookie = [NSHTTPCookie cookieWithProperties:properties];
+    }
+    
+    return cookie;
+}
 
 
 /*
