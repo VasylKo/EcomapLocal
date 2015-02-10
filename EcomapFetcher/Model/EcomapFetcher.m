@@ -125,6 +125,44 @@
 //Code in progress...
 + (void)logoutUser:(EcomapLoggedUser *)loggedUser OnCompletion:(void (^)(BOOL *result, NSError *error))completionHandler
 {
+    //Cookies
+    NSString *cookieString = [NSString stringWithFormat:@"userName=admin; userSurname=null; userRole=administrator; token=%@; id=1; userEmail=admin%%40.com",[[EcomapLoggedUser currentLoggedUser] token]];
+    NSDictionary *properties = [NSDictionary dictionaryWithObjectsAndKeys:
+                                @"http://ecomap.org/", NSHTTPCookieDomain,
+                                @"/", NSHTTPCookiePath,
+                                @"ECOMAPCOOKIE", NSHTTPCookieName,
+                                cookieString, NSHTTPCookieValue,
+                                nil];
+    NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:properties];
+    NSArray* cookies = [NSArray arrayWithObjects: cookie, nil];
+    
+    //NSArray* cookieArray = [NSArray arrayWithObjects: cookie,cookie1, nil];
+    //[[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:cookieArray forURL:[NSURL   URLWithString:urlString] mainDocumentURL:nil];
+    
+    NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
+    NSURLSessionConfiguration *dc = [NSURLSessionConfiguration defaultSessionConfiguration];
+    [dc setHTTPAdditionalHeaders:headers];
+    
+    
+    //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:@"http://ecomap.org/"]];
+    //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
+    //NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
+    //[configuration setHTTPAdditionalHeaders:headers];
+    
+    //Create new session to download JSON file
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:dc];
+    //Perform download task on different thread
+    NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"http://ecomap.org/api/logout"]
+                                            completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                                            
+                                            }];
+    
+    [task resume];
+
+    
+    
+    
     if (loggedUser) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:@"NO" forKey:@"isUserLogged"];
@@ -146,6 +184,7 @@
                                                         //Log to console
                                                         NSLog(@"JSON data downloaded success from URL: %@", request.URL);
                                                         JSON = data;
+                                                        
                                                     } else {
                                                         //Create error message
                                                         error = [EcomapFetcher errorForStatusCode:[EcomapFetcher statusCodeFromResponse:response]];
@@ -174,6 +213,18 @@
                 //Log to console
                 NSLog(@"Data uploaded success to url: %@", request.URL);
                 JSON = data;
+                
+                //Cookies
+                //NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:@"http://ecomap.org/"]];
+                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                
+                NSArray *cookies = [NSHTTPCookie cookiesWithResponseHeaderFields:[httpResp allHeaderFields] forURL:[response URL]];
+                [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:cookies forURL:[response URL] mainDocumentURL:nil];
+                
+                NSArray * cookiesBack = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[request URL]];
+                NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesBack];
+                //[configuration setHTTPAdditionalHeaders:headers];
+                
             } else {
                 //Create error message
                 error = [EcomapFetcher errorForStatusCode:[EcomapFetcher statusCodeFromResponse:response]];
