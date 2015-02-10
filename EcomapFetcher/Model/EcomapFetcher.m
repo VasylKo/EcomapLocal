@@ -121,7 +121,6 @@
                                   NSLog(@"Cookies created success!");
                                   //Put cookie to NSHTTPCookieStorage
                                   [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookieAcceptPolicy:NSHTTPCookieAcceptPolicyAlways];
-                                  //NSArray *cook = [NSArray arrayWithObjects:cookie, nil];
                                   [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookies:@[cookie]
                                                                                      forURL:[EcomapURLFetcher URLforServer]
                                                                             mainDocumentURL:nil];
@@ -168,7 +167,7 @@
 }
 
 #pragma mark - Data tasks
-//Load data task
+//Data task
 +(void)dataTaskWithRequest:(NSURLRequest *)request sessionConfiguration:(NSURLSessionConfiguration *)configuration completionHandler:(void (^)(NSData *JSON, NSError *error))completionHandler
 {
     //Create new session to download JSON file
