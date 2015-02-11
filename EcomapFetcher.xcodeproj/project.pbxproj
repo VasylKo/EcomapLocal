@@ -16,6 +16,7 @@
 		5152CF041A7E3ABA00D3AC28 /* EcomapFetcherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5152CF031A7E3ABA00D3AC28 /* EcomapFetcherTests.m */; };
 		5152CF211A7E4FDC00D3AC28 /* ProblemsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5152CF201A7E4FDC00D3AC28 /* ProblemsTVC.m */; };
 		5152CF241A815F9700D3AC28 /* EcomapLoggedUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5152CF231A815F9700D3AC28 /* EcomapLoggedUser.m */; };
+		DBF3A7A87A1A45E7A6047FA3 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F67E4ACBF5A46268BF73AA2 /* libPods.a */; };
 		E5F27C831A80B20400121A7E /* EcomapProblem.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F27C821A80B20400121A7E /* EcomapProblem.m */; };
 		E5F27C861A80BC7100121A7E /* EcomapFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F27C851A80BC7100121A7E /* EcomapFetcher.m */; };
 		E5F27C891A80BD0800121A7E /* EcomapURLFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E5F27C881A80BD0800121A7E /* EcomapURLFetcher.m */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		188BFC8D6CDC4CCBAC9B78D1 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		5152CEE41A7E3ABA00D3AC28 /* EcomapFetcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EcomapFetcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5152CEE81A7E3ABA00D3AC28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5152CEE91A7E3ABA00D3AC28 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -52,6 +54,8 @@
 		5152CF201A7E4FDC00D3AC28 /* ProblemsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProblemsTVC.m; sourceTree = "<group>"; };
 		5152CF221A815F9700D3AC28 /* EcomapLoggedUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EcomapLoggedUser.h; path = Model/EcomapLoggedUser.h; sourceTree = "<group>"; };
 		5152CF231A815F9700D3AC28 /* EcomapLoggedUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EcomapLoggedUser.m; path = Model/EcomapLoggedUser.m; sourceTree = "<group>"; };
+		8F67E4ACBF5A46268BF73AA2 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5CD03D71A8B6A7F001F707A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		E5F27C811A80B20400121A7E /* EcomapProblem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EcomapProblem.h; path = Model/EcomapProblem.h; sourceTree = "<group>"; };
 		E5F27C821A80B20400121A7E /* EcomapProblem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EcomapProblem.m; path = Model/EcomapProblem.m; sourceTree = "<group>"; };
 		E5F27C841A80BC7100121A7E /* EcomapFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EcomapFetcher.h; path = Model/EcomapFetcher.h; sourceTree = "<group>"; };
@@ -69,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBF3A7A87A1A45E7A6047FA3 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +93,8 @@
 				5152CEE61A7E3ABA00D3AC28 /* EcomapFetcher */,
 				5152CF001A7E3ABA00D3AC28 /* EcomapFetcherTests */,
 				5152CEE51A7E3ABA00D3AC28 /* Products */,
+				188BFC8D6CDC4CCBAC9B78D1 /* Pods.xcconfig */,
+				ED2C54A4A8054705825C4279 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -125,6 +132,7 @@
 				5152CEEC1A7E3ABA00D3AC28 /* AppDelegate.m */,
 				5152CEE81A7E3ABA00D3AC28 /* Info.plist */,
 				5152CEE91A7E3ABA00D3AC28 /* main.m */,
+				E5CD03D71A8B6A7F001F707A /* PrefixHeader.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -180,6 +188,14 @@
 			name = "Fetcher Helper Classes";
 			sourceTree = "<group>";
 		};
+		ED2C54A4A8054705825C4279 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8F67E4ACBF5A46268BF73AA2 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -187,9 +203,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5152CF071A7E3ABA00D3AC28 /* Build configuration list for PBXNativeTarget "EcomapFetcher" */;
 			buildPhases = (
+				2401A28FC05E41FB8345A444 /* Check Pods Manifest.lock */,
 				5152CEE01A7E3ABA00D3AC28 /* Sources */,
 				5152CEE11A7E3ABA00D3AC28 /* Frameworks */,
 				5152CEE21A7E3ABA00D3AC28 /* Resources */,
+				D3A6FFA775CD405AA27A6D5A /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -275,6 +293,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2401A28FC05E41FB8345A444 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D3A6FFA775CD405AA27A6D5A /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5152CEE01A7E3ABA00D3AC28 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -350,10 +401,13 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/EcomapFetcher/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -392,9 +446,11 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_NS_ASSERTIONS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/EcomapFetcher/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -411,6 +467,7 @@
 		};
 		5152CF081A7E3ABA00D3AC28 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 188BFC8D6CDC4CCBAC9B78D1 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = EcomapFetcher/Info.plist;
@@ -421,6 +478,7 @@
 		};
 		5152CF091A7E3ABA00D3AC28 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 188BFC8D6CDC4CCBAC9B78D1 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = EcomapFetcher/Info.plist;

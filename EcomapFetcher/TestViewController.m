@@ -11,6 +11,9 @@
 #import "EcomapProblemDetails.h"
 #import "EcomapLoggedUser.h"
 
+#import "CocoaLumberjack.h"
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+
 @interface TestViewController ()
 @property (nonatomic, strong) NSArray *problems;
 @property (nonatomic, strong) EcomapProblemDetails *problemDetails;
@@ -26,6 +29,10 @@
     //[self login];
     //[self dateParsing];
     //test
+    DDLogError(@"This is an error.");
+    DDLogWarn(@"This is a warning.");
+    DDLogInfo(@"This is just a message.");
+    DDLogVerbose(@"This is a verbose message.");
 }
 
 -(void)dateParsing
